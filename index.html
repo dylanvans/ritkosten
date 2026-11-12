@@ -4,124 +4,231 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ritkosten</title>
-<meta name="theme-color" content="#0f5f55">
+<meta name="theme-color" content="#f3f6f4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1412" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Ritkosten">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
 <style>
+/* Eén kolom, grote tikvlakken. Donkergroen draagt het geld, korfgeel markeert wat aandacht vraagt. */
 :root{
-  --bg:#f3f6f5; --card:#ffffff; --fg:#14262b; --muted:#5d7176; --line:#dbe3e1;
-  --accent:#0f6b5f; --accent-fg:#ffffff; --soft:#e2f0ed; --korf:#f0a81c; --danger:#b3372f;
-  --radius:14px;
+  --bg:#f3f6f4; --card:#ffffff; --fg:#0f1f1a; --muted:#64756f; --line:#e3e9e6; --field:#f0f4f2;
+  --accent:#0e8a5f; --accent-fg:#ffffff; --soft:#e0f3ea; --soft-fg:#0b6a49;
+  --hero:#0f2a22; --hero-fg:#f2f7f4; --hero-muted:#9bb5ab; --korf:#ffc531; --korf-fg:#3d2c00;
+  --danger:#c2392f; --shadow:0 1px 2px rgba(15,31,26,.05),0 6px 20px rgba(15,31,26,.06);
+  --av-s:70%; --av-l:88%; --avt-s:55%; --avt-l:26%;
+  --r:18px;
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --bg:#0f1719; --card:#182326; --fg:#e8efee; --muted:#93a6aa; --line:#2a393d;
-    --accent:#3fb7a5; --accent-fg:#06211d; --soft:#1d3531; --korf:#f0a81c; --danger:#ef7b72;
+    --bg:#0d1412; --card:#17201d; --fg:#eaf1ee; --muted:#8fa39c; --line:#26332f; --field:#1f2b27;
+    --accent:#35c48f; --accent-fg:#04231a; --soft:#17382c; --soft-fg:#7fe0b8;
+    --hero:#1c3a30; --hero-fg:#f2f7f4; --hero-muted:#9bb5ab; --korf:#ffc531; --korf-fg:#3d2c00;
+    --danger:#ff8479; --shadow:0 1px 2px rgba(0,0,0,.3);
+    --av-s:35%; --av-l:26%; --avt-s:75%; --avt-l:84%;
     color-scheme:dark;
   }
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-button,input{font:inherit;color:inherit}
-button{cursor:pointer;border:0;background:none;padding:0}
+body{background:var(--bg);color:var(--fg);font:500 16px/1.4 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0;text-align:inherit}
 :focus-visible{outline:3px solid var(--korf);outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
-#app{max-width:560px;margin:0 auto;min-height:100%;padding:calc(env(safe-area-inset-top,0px) + 14px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 150px) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
-h1{font-size:22px;margin:0;letter-spacing:-.01em}
-h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:10px 0 0;font-weight:700}
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.dot{display:inline-block;width:.6em;height:.6em;border-radius:50%;background:var(--korf);margin-right:.35em}
-.month{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:4px}
-.month b{text-transform:capitalize}
-.month button{width:48px;height:44px;font-size:22px;border-radius:10px;color:var(--accent)}
-.month button:active{background:var(--soft)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+#app{max-width:520px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 12px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 120px) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+
+/* kop */
+.top{display:flex;align-items:center;gap:6px;min-height:52px}
+.top h1{flex:1;font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0;text-transform:capitalize;min-width:0}
+.top h1 small{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.rnd{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--card);box-shadow:var(--shadow);color:var(--fg);flex:none}
+.rnd:active{transform:scale(.94)}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:10px 4px 0;font-weight:700}
+
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
 .list{display:flex;flex-direction:column;gap:10px}
-.ride{display:flex;flex-direction:column;gap:4px;text-align:left;width:100%}
-.ride .row1{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.ride .who{color:var(--muted);font-size:14px}
-.badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:99px;background:var(--soft);color:var(--accent);margin-right:6px}
-.badge.w{background:var(--korf);color:#3a2800}
 .muted{color:var(--muted)}
-.small{font-size:14px}
-.empty{text-align:center;color:var(--muted);padding:26px 14px}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 18px;border-radius:var(--radius);background:var(--accent);color:var(--accent-fg);font-weight:700;width:100%}
-.btn.sec{background:var(--card);color:var(--accent);border:1.5px solid var(--accent)}
-.btn.ghost{background:none;color:var(--muted);font-weight:600;min-height:44px}
-.btn.danger{background:none;color:var(--danger);border:1.5px solid var(--danger)}
-.btn:active{opacity:.8}
+.small{font-size:13.5px}
+
+/* cijfers bovenaan */
+.stats{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px}
+.stat{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:12px 14px;min-width:0}
+.stat.main{background:var(--hero);color:var(--hero-fg);box-shadow:none}
+.stat .k{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.stat.main .k{color:var(--hero-muted)}
+.stat .v{font-size:21px;font-weight:800;letter-spacing:-.02em;margin-top:2px;white-space:nowrap}
+.stat.main .v{color:var(--korf)}
+
+/* avatars */
+.av{--sz:36px;width:var(--sz);height:var(--sz);border-radius:50%;display:inline-grid;place-items:center;flex:none;font-size:calc(var(--sz)*.38);font-weight:800;
+  background:hsl(var(--h) var(--av-s) var(--av-l));color:hsl(var(--h) var(--avt-s) var(--avt-l));position:relative}
+.av.sm{--sz:26px;box-shadow:0 0 0 2px var(--card)}
+.av i{position:absolute;right:-4px;bottom:-4px;width:14px;height:14px;border-radius:50%;background:var(--korf);color:var(--korf-fg);font:800 9px/14px system-ui;text-align:center;box-shadow:0 0 0 1.5px var(--card)}
+.avs{display:flex;align-items:center}
+.avs .av+.av{margin-left:-6px}
+.avs .more{margin-left:6px;font-size:12.5px;color:var(--muted);font-weight:600}
+
+/* ritten */
+.ride{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px 12px 12px}
+.ride:active,.person .head:active{background:var(--field)}
+.ride .date{width:46px;height:54px;border-radius:13px;background:var(--field);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;line-height:1.05}
+.ride .date b{font-size:19px;font-weight:800}
+.ride .date span{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:.04em}
+.ride .mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.ride .pl{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ride .meta{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);font-weight:600}
+.ride .amt{font-weight:800;font-size:17px;flex:none}
+.tag{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:6px;background:var(--soft);color:var(--soft-fg)}
+.tag.w{background:var(--korf);color:var(--korf-fg)}
+.empty{text-align:center;padding:30px 20px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.empty .ic{width:64px;height:64px;border-radius:50%;background:var(--soft);color:var(--soft-fg);display:grid;place-items:center}
+.empty .ic svg{width:30px;height:30px}
+.empty b{font-size:17px}
+.empty p{margin:0;color:var(--muted);max-width:30ch}
+
+/* knoppen */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 18px;border-radius:16px;background:var(--accent);color:var(--accent-fg);font-weight:700;width:100%;text-align:center}
+.btn.sec{background:var(--soft);color:var(--soft-fg)}
+.btn.quiet{background:var(--field);color:var(--fg)}
+.btn.danger{background:none;color:var(--danger);min-height:44px;font-weight:600}
+.btn.slim{min-height:44px;width:auto;flex:none;white-space:nowrap;border-radius:12px;padding:0 14px;font-size:14.5px}
+.btn:active{transform:scale(.98);opacity:.9}
 .btnrow{display:flex;gap:10px}
-.fab{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 68px);padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));pointer-events:none}
-.fab .btn{max-width:528px;margin:0 auto;pointer-events:auto;box-shadow:0 6px 18px rgba(0,0,0,.22)}
-nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px)}
-nav button{flex:1;max-width:186px;height:58px;font-size:13px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-nav button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-nav button.on{color:var(--accent)}
-/* totaal */
-.total{background:var(--accent);color:var(--accent-fg);border:0}
-.total .big{font-size:34px;font-weight:800;letter-spacing:-.02em}
-.total .sub{opacity:.85;font-size:14px}
+.btnrow>*{flex:1;min-width:0}
+
+/* navigatie */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:3;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:64px}
+nav .tab{height:64px;font-size:12px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+nav .tab.on{color:var(--accent)}
+nav .plus{width:62px;height:62px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center;margin-top:-26px;box-shadow:0 0 0 6px var(--bg),0 8px 20px rgba(14,138,95,.35)}
+nav .plus svg{width:28px;height:28px;stroke-width:2.6}
+nav .plus:active{transform:scale(.94)}
+
+/* overzicht */
+.hero{background:var(--hero);color:var(--hero-fg);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.hero .k{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--hero-muted)}
+.hero .big{font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--korf)}
+.hero .row{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--hero-muted);font-weight:600}
+.hero .row b{color:var(--hero-fg)}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--korf);transition:width .3s}
 .person{padding:0;overflow:hidden}
-.person .head{display:flex;align-items:center;gap:10px;padding:12px 14px;width:100%;text-align:left}
-.person .head .nm{flex:1;min-width:0}
-.person .head .amt{font-weight:800;font-size:18px}
-.person .spec{border-top:1px solid var(--line);padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px}
-.person .spec .ln{display:flex;justify-content:space-between;gap:10px;font-size:14px}
-.paid{display:flex;align-items:center;gap:8px;font-size:14px;min-height:40px}
-.paid input{width:22px;height:22px;accent-color:var(--accent)}
-.isPaid .amt{text-decoration:line-through;color:var(--muted)}
-/* formulier */
-.sheet{position:fixed;inset:0;background:var(--bg);z-index:5;display:flex;flex-direction:column}
-.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;border-bottom:1px solid var(--line);background:var(--card)}
-.sheet-head button{min-height:44px;padding:0 6px;color:var(--accent);font-weight:700}
-.sheet-body{flex:1;overflow-y:auto;padding:14px 16px 20px;display:flex;flex-direction:column;gap:12px;max-width:560px;width:100%;margin:0 auto}
-.sheet-foot{border-top:1px solid var(--line);background:var(--card);padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 10px)}
-.sheet-foot .in{max-width:528px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{min-height:44px;padding:0 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);font-weight:600}
-.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
-.chip small{font-weight:500;opacity:.75;margin-left:4px}
-label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:600;flex:1;min-width:0}
-input.t{min-height:46px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);padding:0 12px;width:100%;min-width:0;font-size:16px}
-input.t:focus{border-color:var(--accent);outline:0}
+.person .head{display:flex;align-items:center;gap:12px;padding:12px 14px;width:100%}
+.person .nm{flex:1;min-width:0}
+.person .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.person .amt{font-weight:800;font-size:18px}
+.person .chev{color:var(--muted);transition:transform .2s}
+.person.open .chev{transform:rotate(90deg)}
+.person.isPaid .amt{color:var(--muted);text-decoration:line-through}
+.ok{display:inline-flex;align-items:center;gap:3px;color:var(--soft-fg);background:var(--soft);font-size:11px;font-weight:800;padding:1px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.05em}
+.spec{border-top:1px solid var(--line);padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.spec .ln{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.spec .ln span:first-child{min-width:0}
+
+/* schakelaar */
+.sw{display:flex;align-items:center;gap:12px;min-height:44px;cursor:pointer}
+.sw span{flex:1;min-width:0}
+.sw input{appearance:none;-webkit-appearance:none;width:50px;height:30px;border-radius:99px;background:var(--line);position:relative;flex:none;margin:0;transition:background .2s;cursor:pointer}
+.sw input::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.sw input:checked{background:var(--accent)}
+.sw input:checked::after{transform:translateX(20px)}
+
+/* invoer */
+input.t{min-height:48px;border:1.5px solid transparent;border-radius:13px;background:var(--field);padding:0 14px;width:100%;min-width:0;font-size:16px;font-weight:600}
+input.t::placeholder{color:var(--muted);font-weight:500}
+input.t:focus{border-color:var(--accent);outline:0;background:var(--card)}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--muted);font-weight:700;flex:1;min-width:0}
 .frow{display:flex;gap:10px;align-items:flex-end}
-.rider{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
-.rider:last-child{border-bottom:0}
-.rider .nm{flex:1;min-width:0;font-weight:600;overflow-wrap:anywhere;text-align:left;min-height:44px}
-.rider.off .nm{color:var(--muted);font-weight:500}
-.seg{display:flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
-.seg button{min-height:42px;padding:0 10px;font-size:13px;font-weight:700;color:var(--muted);border-left:1.5px solid var(--line)}
-.seg button:first-child{border-left:0}
-.seg button.on{background:var(--accent);color:var(--accent-fg)}
-.preview{font-size:14px;display:flex;flex-direction:column;gap:2px}
-.preview .ln{display:flex;justify-content:space-between;gap:10px}
-/* instellingen */
+.setrow{display:flex;align-items:center;gap:10px;min-height:52px}
+.setrow+.setrow,.setrow+.sw,.sw+.setrow{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+.setrow .lbl{flex:1;min-width:0;font-weight:600}
+.setrow input.t{width:120px;flex:none;text-align:right}
+.km{width:62px!important;flex:none;text-align:right;padding:0 8px!important}
+.item input.t{padding:0 10px}
+.unit{font-size:13px;color:var(--muted);flex:none;font-weight:600}
+.x{width:40px;height:44px;flex:none;color:var(--muted);display:grid;place-items:center;border-radius:12px}
+.x svg{width:18px;height:18px}
+.x:active{color:var(--danger);background:var(--field)}
+.pchips{display:flex;flex-wrap:wrap;gap:8px}
+.pchip{display:flex;align-items:center;gap:8px;background:var(--field);border-radius:99px;padding:4px 4px 4px 4px;font-weight:700;max-width:100%}
+.pchip .av{--sz:32px}
+.pchip span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pchip .x{width:32px;height:32px;border-radius:50%}
 .item{display:flex;gap:8px;align-items:center}
-.item .x{width:44px;height:44px;flex:none;color:var(--danger);font-size:20px;border-radius:10px}
-.item .km{width:86px;flex:none;text-align:right}
-.unit{font-size:13px;color:var(--muted);flex:none}
-.switch{display:flex;align-items:center;gap:10px;min-height:44px}
-.switch input{width:22px;height:22px;accent-color:var(--accent);flex:none}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 140px);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:99px;font-weight:600;font-size:14px;z-index:9;max-width:90vw;text-align:center}
-textarea.out{width:100%;min-height:160px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg);font:13px/1.45 ui-monospace,Consolas,monospace;padding:10px}
+
+/* rit-formulier */
+.back{position:fixed;inset:0;background:rgba(6,14,11,.5);z-index:5;display:flex;align-items:flex-end;justify-content:center}
+.panel{background:var(--bg);width:100%;max-width:520px;max-height:calc(100% - env(safe-area-inset-top,0px) - 18px);border-radius:26px 26px 0 0;display:flex;flex-direction:column;overflow:hidden}
+.back.anim{animation:fade .2s ease-out}
+.back.anim .panel{animation:up .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(40%);opacity:.4}}
+@keyframes fade{from{background:transparent}}
+@media (prefers-reduced-motion: reduce){.back.anim,.back.anim .panel{animation:none}}
+.phead{display:flex;align-items:center;gap:10px;padding:14px 16px 8px}
+.phead b{flex:1;font-size:20px;font-weight:800;letter-spacing:-.02em}
+.phead .rnd{box-shadow:none;background:var(--field)}
+.pbody{flex:1;overflow-y:auto;padding:6px 16px 18px;display:flex;flex-direction:column;gap:12px;overscroll-behavior:contain}
+.pfoot{background:var(--card);border-top:1px solid var(--line);padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;align-items:center;gap:14px}
+.pfoot .sum{flex:1;min-width:0;line-height:1.2}
+.pfoot .sum b{display:block;font-size:22px;font-weight:800;letter-spacing:-.02em}
+.pfoot .btn{width:auto;flex:none;padding:0 26px}
+.seg2{display:grid;grid-template-columns:1fr 1fr;background:var(--field);border-radius:14px;padding:4px;flex:1}
+.seg2 button{min-height:40px;border-radius:11px;font-weight:700;text-align:center;color:var(--muted);font-size:14.5px}
+.seg2 button.on{background:var(--card);color:var(--fg);box-shadow:var(--shadow)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:48px;padding:6px 16px;border-radius:14px;background:var(--card);box-shadow:var(--shadow);font-weight:700;display:flex;flex-direction:column;justify-content:center;line-height:1.2;border:2px solid transparent}
+.chip small{font-weight:600;color:var(--muted);font-size:12px}
+.chip.on{border-color:var(--accent);background:var(--soft);color:var(--soft-fg);box-shadow:none}
+.chip.on small{color:inherit;opacity:.8}
+.h2row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:6px}
+.h2row h2{margin:0 4px}
+.link{color:var(--accent);font-weight:700;font-size:14px;min-height:32px;padding:0 4px}
+.riders{padding:4px 12px}
+.rider{display:flex;align-items:center;gap:10px;padding:9px 0}
+.rider+.rider{border-top:1px solid var(--line)}
+.rider .who{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:44px}
+.rider .who div{min-width:0;line-height:1.2}
+.rider .who b{display:block;overflow-wrap:anywhere}
+.rider .who small{font-size:12.5px;color:var(--accent);font-weight:700}
+.rider.off .av{filter:grayscale(1);opacity:.55}
+.rider.off .who b{color:var(--muted);font-weight:600}
+.seg{display:flex;background:var(--field);border-radius:12px;padding:3px;flex:none}
+.seg button{min-height:38px;width:52px;border-radius:9px;font-size:12px;font-weight:700;color:var(--muted);text-align:center}
+.seg button.on{background:var(--accent);color:var(--accent-fg)}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 104px);background:var(--fg);color:var(--bg);padding:11px 18px;border-radius:99px;font-weight:700;font-size:14px;z-index:9;max-width:90vw;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+textarea.out{width:100%;min-height:160px;border:0;border-radius:13px;background:var(--field);font:13px/1.45 ui-monospace,Consolas,monospace;padding:12px}
 </style>
 </head>
 <body>
 <div id="app"></div>
-<div id="sheet"></div>
-<div id="fab"></div>
 <nav id="nav"></nav>
+<div id="sheet"></div>
 <div id="toast" class="toast" hidden></div>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 <script>
 'use strict';
 const KEY='ritkosten-v1';
 const DIR={both:'heen + terug',out:'alleen heen',back:'alleen terug'};
-const DIRS={both:'H+T',out:'Heen',back:'Terug'};
+const DIRS={both:'Retour',out:'Heen',back:'Terug'};
+const ICON={
+  car:'<path d="M5 17h14M4 17v-3.5l1.8-5A2 2 0 0 1 7.7 7h8.6a2 2 0 0 1 1.9 1.5l1.8 5V17M4 13.5h16M6.5 17v2M17.5 17v2"/>',
+  list:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  left:'<path d="M15 5l-7 7 7 7"/>', right:'<path d="M9 5l7 7-7 7"/>',
+  share:'<path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>',
+  copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>'
+};
+const ico=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -132,12 +239,14 @@ const pad=n=>String(n).padStart(2,'0');
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
 const fmtDate=d=>new Date(d+'T12:00').toLocaleDateString('nl-NL',{weekday:'short',day:'numeric',month:'short'});
 const fmtMonth=m=>new Date(m+'-15T12:00').toLocaleDateString('nl-NL',{month:'long',year:'numeric'});
+const plural=(n,a,b)=>n+' '+(n===1?a:b);
 
 let S={rate:0.23,driver:'Enza',driverShares:true,people:[],places:[],rides:[],paid:{}};
 try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Opslaan lukt niet op dit toestel')}};
 
-let tab=S.people.length&&S.places.length?'ritten':'instellingen';
+const ready=()=>S.people.some(p=>!p.gone)&&S.places.length>0;
+let tab=ready()?'ritten':'instellingen';
 let month=today().slice(0,7);
 let draft=null;      // rit die nu bewerkt wordt
 let open={};         // uitgeklapte personen in overzicht
@@ -146,6 +255,13 @@ let showText=null;   // tekst die getoond wordt als kopiëren niet lukt
 const person=id=>S.people.find(p=>p.id===id);
 const pname=id=>person(id)?.name||'(verwijderd)';
 const activePeople=()=>S.people.filter(p=>!p.gone);
+function av(id,cls='',dir){
+  const n=pname(id), parts=n.trim().split(/\s+/);
+  const ini=(parts[0][0]+(parts.length>1?parts[parts.length-1][0]:'')).toUpperCase();
+  let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))%360;
+  const mark=dir==='out'?'<i>→</i>':dir==='back'?'<i>←</i>':'';
+  return `<span class="av ${cls}" style="--h:${h}" title="${esc(n)}">${esc(ini)}${mark}</span>`;
+}
 
 /* Kosten per meerijder voor één rit. Elke richting kost km × tarief en wordt
    gedeeld door iedereen die dat stuk in de auto zat (inclusief bestuurder als die meedeelt). */
@@ -164,7 +280,7 @@ const rideTotal=r=>Object.values(shares(r)).reduce((a,b)=>a+b,0);
 const monthRides=()=>S.rides.filter(r=>r.date.slice(0,7)===month).sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
 
 function summary(){
-  const rides=monthRides().slice().reverse(), per={};
+  const rides=monthRides().slice().reverse(), per={}, paid=S.paid[month]||{};
   let km=0;
   for(const r of rides){
     km+=r.km*2;
@@ -178,112 +294,130 @@ function summary(){
   const list=Object.values(per).sort((a,b)=>a.name.localeCompare(b.name,'nl'));
   list.forEach(p=>p.total=Math.round(p.total*100)/100);
   const total=list.reduce((a,p)=>a+p.total,0);
-  return {rides,list,total,km,cost:rides.reduce((a,r)=>a+r.km*2*r.rate,0)};
+  const got=list.reduce((a,p)=>a+(paid[p.id]?p.total:0),0);
+  return {rides,list,total,got,km,cost:rides.reduce((a,r)=>a+r.km*2*r.rate,0)};
 }
 
 /* ---------- weergave ---------- */
 function render(){
-  const body=$('.sheet-body'), st=body?body.scrollTop:0;
+  const body=$('.pbody'), st=body?body.scrollTop:0;
   $('#app').innerHTML=tab==='ritten'?vRitten():tab==='overzicht'?vOverzicht():vInstellingen();
-  $('#fab').innerHTML=tab==='ritten'&&!draft?'<div class="fab"><button class="btn" data-act="new">+ Rit toevoegen</button></div>':'';
-  $('#nav').innerHTML=[['ritten','Ritten','<path d="M5 17h14M6 17l1.5-6h9L18 17M7 17v2M17 17v2M8 11l1-4h6l1 4"/>'],
-    ['overzicht','Overzicht','<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/>'],
-    ['instellingen','Instellingen','<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>']]
-    .map(([k,l,i])=>`<button class="${tab===k?'on':''}" data-act="tab" data-v="${k}"><svg viewBox="0 0 24 24">${i}</svg>${l}</button>`).join('');
+  $('#nav').innerHTML=`<div class="in">
+    <button class="tab ${tab==='ritten'?'on':''}" data-act="tab" data-v="ritten">${ico('car')}Ritten</button>
+    <button class="plus" data-act="new" aria-label="Rit toevoegen">${ico('plus')}</button>
+    <button class="tab ${tab==='overzicht'?'on':''}" data-act="tab" data-v="overzicht">${ico('list')}Overzicht</button></div>`;
   $('#sheet').innerHTML=draft?vSheet():'';
-  const nb=$('.sheet-body'); if(nb)nb.scrollTop=st;
+  if(draft)draft.anim=false;
+  const nb=$('.pbody'); if(nb)nb.scrollTop=st;
 }
-const head=t=>`<div class="top"><h1><span class="dot"></span>${t}</h1></div>`;
-const monthBar=()=>`<div class="month"><button data-act="month" data-v="-1" aria-label="Vorige maand">‹</button><b>${fmtMonth(month)}</b><button data-act="month" data-v="1" aria-label="Volgende maand">›</button></div>`;
+const monthTop=sub=>`<div class="top">
+  <button class="rnd" data-act="month" data-v="-1" aria-label="Vorige maand">${ico('left')}</button>
+  <h1 style="text-align:center"><small>${sub}</small>${fmtMonth(month)}</h1>
+  <button class="rnd" data-act="month" data-v="1" aria-label="Volgende maand">${ico('right')}</button>
+  <button class="rnd" data-act="tab" data-v="instellingen" aria-label="Instellingen">${ico('gear')}</button></div>`;
 
 function vRitten(){
-  const rides=monthRides();
-  let h=head('Ritten')+monthBar();
-  if(!S.people.length||!S.places.length)
-    h+=`<div class="card empty">Zet eerst je teamgenoten en de trainingsplekken in <b>Instellingen</b>. Daarna is een rit invoeren een paar tikken werk.</div>`;
-  else if(!rides.length) h+=`<div class="card empty">Nog geen ritten in ${fmtMonth(month)}.</div>`;
+  const rides=monthRides(), s=summary();
+  let h=monthTop('Ritten');
+  h+=`<div class="stats">
+    <div class="stat main"><div class="k">Terug te krijgen</div><div class="v num">${eur(s.total)}</div></div>
+    <div class="stat"><div class="k">Ritten</div><div class="v num">${rides.length}</div></div>
+    <div class="stat"><div class="k">Km</div><div class="v num">${num(s.km)}</div></div></div>`;
+  if(!ready())
+    return h+`<div class="card empty"><div class="ic">${ico('gear')}</div><b>Eerst even instellen</b><p>Vul één keer je teamgenoten en de plekken in. Daarna is een rit een paar tikken werk.</p><button class="btn" data-act="tab" data-v="instellingen">Naar instellingen</button></div>`;
+  if(!rides.length)
+    return h+`<div class="card empty"><div class="ic">${ico('car')}</div><b>Nog geen ritten</b><p>Voeg je eerste rit van ${fmtMonth(month)} toe.</p><button class="btn" data-act="new">${ico('plus')}Rit toevoegen</button></div>`;
   h+='<div class="list">'+rides.map(r=>{
-    const who=Object.keys(r.riders).map(id=>esc(pname(id))+(r.riders[id]==='both'?'':' ('+(r.riders[id]==='out'?'heen':'terug')+')')).join(', ');
+    const ids=Object.keys(r.riders), d=new Date(r.date+'T12:00');
     return `<button class="card ride" data-act="edit" data-v="${r.id}">
-      <div class="row1"><b>${fmtDate(r.date)}</b><b class="num">${eur(rideTotal(r))}</b></div>
-      <div><span class="badge ${r.kind==='wedstrijd'?'w':''}">${r.kind}</span>${esc(r.place)} <span class="muted small num">· ${num(r.km*2)} km retour</span></div>
-      <div class="who">${who||'Niemand reed mee'}</div></button>`}).join('')+'</div>';
+      <div class="date"><b class="num">${d.getDate()}</b><span>${d.toLocaleDateString('nl-NL',{weekday:'short'})}</span></div>
+      <div class="mid"><div class="pl">${esc(r.place)}</div>
+        <div class="meta"><span class="tag ${r.kind==='wedstrijd'?'w':''}">${r.kind}</span><span class="num">${num(r.km*2)} km</span></div>
+        <div class="avs">${ids.length?ids.slice(0,6).map(id=>av(id,'sm',r.riders[id])).join('')+(ids.length>6?`<span class="more">+${ids.length-6}</span>`:''):'<span class="muted small">Niemand reed mee</span>'}</div></div>
+      <div class="amt num">${eur(rideTotal(r))}</div></button>`}).join('')+'</div>';
   return h;
 }
 
 function vOverzicht(){
   const s=summary(), paid=S.paid[month]||{};
-  let h=head('Overzicht')+monthBar();
-  h+=`<div class="card total"><div class="sub">Terug te krijgen van teamgenoten</div><div class="big num">${eur(s.total)}</div>
-    <div class="sub num">${s.rides.length} ${s.rides.length===1?'rit':'ritten'} · ${num(s.km)} km · totale kosten ${eur(s.cost)}</div></div>`;
-  if(!s.list.length) return h+`<div class="card empty">Geen meerijders in ${fmtMonth(month)}.</div>`;
-  h+='<div class="list">'+s.list.map(p=>`<div class="card person ${paid[p.id]?'isPaid':''}">
-    <button class="head" data-act="open" data-v="${p.id}"><span class="nm"><b>${esc(p.name)}</b><br><span class="muted small">${p.lines.length} ${p.lines.length===1?'rit':'ritten'}${paid[p.id]?' · betaald':''}</span></span><span class="amt num">${eur(p.total)}</span><span class="muted">${open[p.id]?'▾':'▸'}</span></button>
+  let h=monthTop('Overzicht');
+  h+=`<div class="hero"><div class="k">Terug te krijgen</div><div class="big num">${eur(s.total)}</div>
+    ${s.total?`<div class="bar"><i style="width:${Math.round(s.got/s.total*100)}%"></i></div>
+    <div class="row"><span><b class="num">${eur(s.got)}</b> betaald</span><span><b class="num">${eur(s.total-s.got)}</b> open</span></div>`:''}
+    <div class="row"><span class="num">${plural(s.rides.length,'rit','ritten')} · ${num(s.km)} km</span><span class="num">autokosten ${eur(s.cost)}</span></div></div>`;
+  if(!s.list.length) return h+`<div class="card empty"><div class="ic">${ico('list')}</div><b>Niets te verrekenen</b><p>Er reed niemand mee in ${fmtMonth(month)}.</p></div>`;
+  h+='<h2>Per teamgenoot</h2><div class="list">'+s.list.map(p=>`<div class="card person ${paid[p.id]?'isPaid':''} ${open[p.id]?'open':''}">
+    <button class="head" data-act="open" data-v="${p.id}" aria-expanded="${!!open[p.id]}">${av(p.id)}<span class="nm"><b>${esc(p.name)}</b><span class="muted small">${plural(p.lines.length,'rit','ritten')}</span>${paid[p.id]?' <span class="ok">betaald</span>':''}</span><span class="amt num">${eur(p.total)}</span><span class="chev">${ico('right')}</span></button>
     ${open[p.id]?`<div class="spec">${p.lines.map(l=>`<div class="ln"><span>${fmtDate(l.r.date)} · ${esc(l.r.place)} <span class="muted">(${DIR[l.dir]})</span></span><span class="num">${eur(l.amt)}</span></div>`).join('')}
-      <label class="paid"><input type="checkbox" data-chg="paid" data-v="${p.id}" ${paid[p.id]?'checked':''}> Heeft betaald</label>
-      <button class="btn sec" data-act="copyOne" data-v="${p.id}">Kopieer bericht voor ${esc(p.name)}</button></div>`:''}
+      <label class="sw"><span>Heeft betaald</span><input type="checkbox" data-chg="paid" data-v="${p.id}" ${paid[p.id]?'checked':''}></label>
+      <button class="btn sec" data-act="copyOne" data-v="${p.id}">${ico('copy')}Kopieer bericht voor ${esc(p.name.split(' ')[0])}</button></div>`:''}
   </div>`).join('')+'</div>';
   h+=`<h2>Delen met het team</h2>
-    <button class="btn" data-act="share">Deel overzicht</button>
-    <div class="btnrow"><button class="btn sec" data-act="copyAll">Kopieer tekst</button><button class="btn sec" data-act="copyFull">Met specificatie</button></div>
-    <button class="btn ghost" data-act="csv">Download als Excel-bestand (CSV)</button>`;
+    <button class="btn" data-act="share">${ico('share')}Deel overzicht</button>
+    <div class="btnrow"><button class="btn quiet" data-act="copyAll">Kopieer kort</button><button class="btn quiet" data-act="copyFull">Kopieer met ritten</button></div>
+    <button class="btn danger" style="color:var(--muted)" data-act="csv">Download als Excel-bestand</button>`;
   if(showText!==null) h+=`<textarea class="out" id="outText" readonly>${esc(showText)}</textarea>`;
   return h;
 }
 
 function vInstellingen(){
-  return head('Instellingen')+`
-  <h2>Kilometervergoeding</h2>
-  <div class="card"><div class="frow"><label class="f">Bedrag per kilometer (€)<input class="t num" id="rate" inputmode="decimal" data-chg="rate" value="${String(S.rate).replace('.',',')}"></label>
-    <label class="f">Naam bestuurder<input class="t" id="driver" data-chg="driver" value="${esc(S.driver)}"></label></div>
-    <label class="switch" style="margin-top:10px"><input type="checkbox" id="dshare" data-chg="dshare" ${S.driverShares?'checked':''}><span>${esc(S.driver)||'Bestuurder'} betaalt zelf ook een deel<br><span class="muted small">Aan: kosten gedeeld door iedereen in de auto. Uit: alleen door de meerijders.</span></span></label>
-    <p class="muted small" style="margin:8px 0 0">Wijzigingen gelden voor nieuwe ritten. Ritten die er al staan houden hun eigen tarief.</p></div>
+  const ppl=activePeople();
+  return `<div class="top"><h1><small>Ritkosten</small>Instellingen</h1>${ready()?`<button class="btn slim" data-act="tab" data-v="ritten">Klaar</button>`:''}</div>
+  ${ready()?'':`<div class="hero"><div class="k">Welkom</div><div style="font-size:20px;font-weight:800;line-height:1.25">Vul één keer je team en de plekken in.</div><div class="row"><span>Daarna kost een rit invoeren een paar tikken.</span></div></div>`}
   <h2>Teamgenoten</h2>
-  <div class="card list">${activePeople().map(p=>`<div class="item"><input class="t" id="p-${p.id}" data-chg="pname" data-v="${p.id}" value="${esc(p.name)}" aria-label="Naam"><button class="x" data-act="delPerson" data-v="${p.id}" aria-label="Verwijder ${esc(p.name)}">✕</button></div>`).join('')}
-    <div class="item"><input class="t" id="newPerson" placeholder="Naam toevoegen" enterkeyhint="done"><button class="btn" style="width:auto" data-act="addPerson">Voeg toe</button></div></div>
+  <div class="card list">${ppl.length?`<div class="pchips">${ppl.map(p=>`<div class="pchip">${av(p.id)}<span>${esc(p.name)}</span><button class="x" data-act="delPerson" data-v="${p.id}" aria-label="Verwijder ${esc(p.name)}">${ico('x')}</button></div>`).join('')}</div>`:''}
+    <div class="item"><input class="t" id="newPerson" placeholder="Naam" enterkeyhint="done" autocomplete="off"><button class="btn slim" style="min-height:48px" data-act="addPerson">Voeg toe</button></div></div>
   <h2>Plekken</h2>
-  <div class="card list"><p class="muted small" style="margin:0">Afstand is de enkele reis. De terugweg wordt automatisch meegeteld.</p>
-    ${S.places.map(p=>`<div class="item"><input class="t" id="pl-${p.id}" data-chg="plname" data-v="${p.id}" value="${esc(p.name)}" aria-label="Plek"><input class="t km num" id="plk-${p.id}" inputmode="decimal" data-chg="plkm" data-v="${p.id}" value="${String(p.km).replace('.',',')}" aria-label="Kilometers enkele reis"><span class="unit">km</span><button class="x" data-act="delPlace" data-v="${p.id}" aria-label="Verwijder ${esc(p.name)}">✕</button></div>`).join('')}
-    <div class="item"><input class="t" id="newPlace" placeholder="Bijv. Sporthal Hoenderdaal"><input class="t km num" id="newKm" inputmode="decimal" placeholder="0" aria-label="Kilometers enkele reis"><span class="unit">km</span></div>
-    <button class="btn sec" data-act="addPlace">Plek toevoegen</button></div>
+  <div class="card list"><div class="muted small">Afstand in km van één keer heen. De terugweg telt automatisch mee.</div>
+    ${S.places.map(p=>`<div class="item"><input class="t" id="pl-${p.id}" data-chg="plname" data-v="${p.id}" value="${esc(p.name)}" aria-label="Plek"><input class="t km num" id="plk-${p.id}" inputmode="decimal" data-chg="plkm" data-v="${p.id}" value="${String(p.km).replace('.',',')}" aria-label="Kilometers enkele reis"><button class="x" data-act="delPlace" data-v="${p.id}" aria-label="Verwijder ${esc(p.name)}">${ico('x')}</button></div>`).join('')}
+    <div class="item"><input class="t" id="newPlace" placeholder="Bijv. Sporthal Hoenderdaal" autocomplete="off"><input class="t km num" id="newKm" inputmode="decimal" placeholder="0" aria-label="Kilometers enkele reis"><span class="unit">km</span></div>
+    <button class="btn sec" data-act="addPlace">${ico('plus')}Plek toevoegen</button></div>
+  <h2>Vergoeding</h2>
+  <div class="card">
+    <div class="setrow"><label class="lbl" for="rate">Bedrag per kilometer</label><span class="unit">€</span><input class="t num" id="rate" inputmode="decimal" data-chg="rate" value="${S.rate.toFixed(2).replace('.',',')}" style="width:84px"></div>
+    <div class="setrow"><label class="lbl" for="driver">Bestuurder</label><input class="t" id="driver" data-chg="driver" value="${esc(S.driver)}"></div>
+    <label class="sw" style="border-top:1px solid var(--line);padding-top:10px;margin-top:8px"><span><b>${esc(S.driver)} betaalt zelf mee</b><br><span class="muted small">${S.driverShares?'Kosten worden gedeeld door iedereen in de auto.':'Alleen de meerijders delen de kosten.'}</span></span><input type="checkbox" id="dshare" data-chg="dshare" ${S.driverShares?'checked':''}></label>
+    <div class="muted small" style="margin-top:10px">Wijzigingen gelden voor nieuwe ritten.</div></div>
   <h2>Reservekopie</h2>
-  <div class="card list"><p class="muted small" style="margin:0">Alles staat alleen op dit toestel. Maak af en toe een reservekopie, of gebruik hem om over te stappen naar een andere telefoon.</p>
-    <div class="btnrow"><button class="btn sec" data-act="backup">Kopie opslaan</button><button class="btn sec" data-act="restore">Kopie terugzetten</button></div></div>`;
+  <div class="card list"><div class="muted small">Alles staat alleen op dit toestel. Maak af en toe een kopie, of gebruik hem om over te stappen naar een andere telefoon.</div>
+    <div class="btnrow"><button class="btn quiet" data-act="backup">Kopie opslaan</button><button class="btn quiet" data-act="restore">Terugzetten</button></div></div>`;
 }
 
 function vSheet(){
-  const d=draft, sh=shares(d), ids=Object.keys(sh);
+  const d=draft, sh=shares(d);
   const ppl=S.people.filter(p=>!p.gone||d.riders[p.id]);
-  return `<div class="sheet"><div class="sheet-head"><button data-act="cancel">Annuleer</button><b>${d.isNew?'Nieuwe rit':'Rit aanpassen'}</b><span style="width:70px"></span></div>
-  <div class="sheet-body">
-    <div class="frow"><label class="f">Datum<input class="t" type="date" id="d-date" data-inp="date" value="${d.date}"></label>
-      <div class="chips" style="flex:none">${['training','wedstrijd'].map(k=>`<button class="chip ${d.kind===k?'on':''}" data-act="kind" data-v="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div></div>
-    <h2>Waar?</h2>
-    <div class="chips">${S.places.map(p=>`<button class="chip ${d.placeId===p.id?'on':''}" data-act="place" data-v="${p.id}">${esc(p.name)}<small class="num">${num(p.km)} km</small></button>`).join('')}
-      <button class="chip ${d.placeId==='x'?'on':''}" data-act="place" data-v="x">Andere plek</button></div>
-    ${d.placeId==='x'?`<div class="frow"><label class="f">Naam plek<input class="t" id="d-place" data-inp="place" value="${esc(d.place)}"></label><label class="f" style="flex:0 0 110px">Km enkele reis<input class="t num" id="d-km" inputmode="decimal" data-inp="km" value="${d.km?String(d.km).replace('.',','):''}"></label></div>`:''}
-    <h2>Wie reed er mee?</h2>
-    <div class="card" style="padding:4px 14px">${ppl.length?ppl.map(p=>{const v=d.riders[p.id];return `<div class="rider ${v?'':'off'}">
-      <button class="nm" data-act="rider" data-v="${p.id}" data-d="${v?'':'both'}">${esc(p.name)}</button>
-      <div class="seg">${['both','out','back'].map(k=>`<button class="${v===k?'on':''}" data-act="rider" data-v="${p.id}" data-d="${v===k?'':k}" aria-pressed="${v===k}" aria-label="${esc(p.name)} ${DIR[k]}">${DIRS[k]}</button>`).join('')}</div></div>`}).join(''):'<p class="muted small">Nog geen teamgenoten. Voeg ze toe bij Instellingen.</p>'}</div>
-    <p class="muted small" style="margin:0">Tik op een naam voor heen + terug, of kies alleen heen of alleen terug.</p>
+  const all=ppl.length&&ppl.every(p=>d.riders[p.id]);
+  return `<div class="back ${d.anim?'anim':''}" data-act="backdrop"><div class="panel" role="dialog" aria-label="${d.isNew?'Nieuwe rit':'Rit aanpassen'}">
+  <div class="phead"><b>${d.isNew?'Nieuwe rit':'Rit aanpassen'}</b><button class="rnd" data-act="cancel" aria-label="Sluiten">${ico('x')}</button></div>
+  <div class="pbody">
+    <div class="frow"><label class="f" style="flex:0 0 150px">Datum<input class="t" type="date" id="d-date" data-inp="date" value="${d.date}"></label>
+      <div class="seg2">${['training','wedstrijd'].map(k=>`<button class="${d.kind===k?'on':''}" data-act="kind" data-v="${k}" aria-pressed="${d.kind===k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div></div>
+    <div class="h2row"><h2>Waar?</h2></div>
+    <div class="chips">${S.places.map(p=>`<button class="chip ${d.placeId===p.id?'on':''}" data-act="place" data-v="${p.id}" aria-pressed="${d.placeId===p.id}">${esc(p.name)}<small class="num">${num(p.km)} km heen</small></button>`).join('')}
+      <button class="chip ${d.placeId==='x'?'on':''}" data-act="place" data-v="x">Andere plek<small>zelf invullen</small></button></div>
+    ${d.placeId==='x'?`<div class="frow"><label class="f">Naam plek<input class="t" id="d-place" data-inp="place" value="${esc(d.place)}" autocomplete="off"></label><label class="f" style="flex:0 0 100px">Km heen<input class="t num" id="d-km" inputmode="decimal" data-inp="km" value="${d.km?String(d.km).replace('.',','):''}"></label></div>`:''}
+    <div class="h2row"><h2>Wie reed er mee?</h2>${ppl.length?`<button class="link" data-act="all" data-v="${all?'':'1'}">${all?'Niemand':'Iedereen'}</button>`:''}</div>
+    <div class="card riders">${ppl.map(p=>{const v=d.riders[p.id];return `<div class="rider ${v?'':'off'}">
+      <button class="who" data-act="rider" data-v="${p.id}" data-d="${v?'':'both'}">${av(p.id)}<div><b>${esc(p.name)}</b><small class="num" data-amt="${p.id}">${sh[p.id]?eur(sh[p.id]):''}</small></div></button>
+      <div class="seg">${['both','out','back'].map(k=>`<button class="${v===k?'on':''}" data-act="rider" data-v="${p.id}" data-d="${v===k?'':k}" aria-pressed="${v===k}" aria-label="${esc(p.name)} ${DIR[k]}">${DIRS[k]}</button>`).join('')}</div></div>`}).join('')}</div>
     ${d.isNew?'':`<button class="btn danger" data-act="del">${d.confirm?'Zeker weten? Tik nog een keer':'Rit verwijderen'}</button>`}
   </div>
-  <div class="sheet-foot"><div class="in"><div class="preview" id="preview">${preview()}</div>
-    <button class="btn" data-act="saveRide">Opslaan</button></div></div></div>`;
+  <div class="pfoot"><div class="sum" id="sum">${sumHtml()}</div><button class="btn" data-act="saveRide">Opslaan</button></div></div></div>`;
 }
-function preview(){
-  const d=draft, sh=shares(d), ids=Object.keys(sh);
-  if(!d.km) return '<span class="muted">Kies een plek.</span>';
-  const tot=d.km*2*d.rate, back=ids.reduce((a,i)=>a+sh[i],0);
-  return `<div class="ln muted"><span class="num">${num(d.km*2)} km × ${eur(d.rate)}</span><span class="num">${eur(tot)}</span></div>`+
-    ids.map(i=>`<div class="ln"><span>${esc(pname(i))}</span><span class="num">${eur(sh[i])}</span></div>`).join('')+
-    (ids.length?`<div class="ln"><b>Terug te krijgen</b><b class="num">${eur(back)}</b></div>`:'');
+function sumHtml(){
+  const d=draft, back=Object.values(shares(d)).reduce((a,b)=>a+b,0);
+  if(!d.km) return '<span class="muted small">Kies een plek</span>';
+  return `<span class="muted small num">${num(d.km*2)} km · auto ${eur(d.km*2*d.rate)}</span><b class="num">${eur(back)} terug</b>`;
+}
+function refreshAmounts(){
+  const sh=shares(draft);
+  document.querySelectorAll('[data-amt]').forEach(el=>el.textContent=sh[el.dataset.amt]?eur(sh[el.dataset.amt]):'');
+  $('#sum').innerHTML=sumHtml();
 }
 
 /* ---------- export ---------- */
 function textAll(full){
-  const s=summary(), L=[`🚗 Ritkosten ${fmtMonth(month)}`,`(${eur(S.rate)} per km, ${s.rides.length} ${s.rides.length===1?'rit':'ritten'})`,''];
+  const s=summary(), L=[`🚗 Ritkosten ${fmtMonth(month)}`,`(${eur(S.rate)} per km, ${plural(s.rides.length,'rit','ritten')})`,''];
   for(const p of s.list){
     L.push(`${p.name}: ${eur(p.total)}`+(full?'':` (${p.lines.length}×)`));
     if(full){p.lines.forEach(l=>L.push(`  - ${fmtDate(l.r.date)} ${l.r.place}, ${DIR[l.dir]}: ${eur(l.amt)}`));L.push('')}
@@ -294,7 +428,7 @@ function textAll(full){
 }
 function textOne(id){
   const p=summary().list.find(x=>x.id===id); if(!p)return '';
-  return [`Hoi ${p.name}! Je ritkosten voor ${fmtMonth(month)}: ${eur(p.total)}`,'',
+  return [`Hoi ${p.name.split(' ')[0]}! Je ritkosten voor ${fmtMonth(month)}: ${eur(p.total)}`,'',
     ...p.lines.map(l=>`- ${fmtDate(l.r.date)} ${l.r.place}, ${DIR[l.dir]}: ${eur(l.amt)}`),'',`Groetjes, ${S.driver}`].join('\n');
 }
 function csv(){
@@ -326,27 +460,29 @@ const A={
   tab(v){tab=v;showText=null;window.scrollTo(0,0)},
   month(v){const d=new Date(month+'-15T12:00');d.setMonth(d.getMonth()+ +v);month=d.getFullYear()+'-'+pad(d.getMonth()+1);open={};showText=null},
   new(){
-    if(!S.places.length||!S.people.length){tab='instellingen';toast('Voeg eerst teamgenoten en plekken toe');return}
+    if(!ready()){tab='instellingen';toast('Voeg eerst teamgenoten en plekken toe');return}
     const last=S.rides[S.rides.length-1];
     const t=today(), date=t.slice(0,7)===month?t:month+'-01';
-    draft={id:uid(),isNew:true,date,kind:'training',riders:{},rate:S.rate,driverShares:S.driverShares,placeId:'',place:'',km:0};
+    draft={id:uid(),isNew:true,anim:true,date,kind:'training',riders:{},rate:S.rate,driverShares:S.driverShares,placeId:'',place:'',km:0};
     setPlace(draft,S.places.some(p=>p.id===last?.placeId)?last.placeId:S.places[0].id);
   },
-  edit(v){const r=S.rides.find(x=>x.id===v);if(r)draft=JSON.parse(JSON.stringify(r))},
+  edit(v){const r=S.rides.find(x=>x.id===v);if(r){draft=JSON.parse(JSON.stringify(r));draft.anim=true}},
   cancel(){draft=null},
+  backdrop(v,el,e){if(e.target!==el)return false;draft=null},
   kind(v){draft.kind=v},
   place(v){setPlace(draft,v)},
   rider(v,el){const d=el.dataset.d;if(d)draft.riders[v]=d;else delete draft.riders[v]},
+  all(v){draft.riders={};if(v)activePeople().forEach(p=>draft.riders[p.id]='both')},
   del(){if(!draft.confirm){draft.confirm=true;return}S.rides=S.rides.filter(r=>r.id!==draft.id);draft=null;save();toast('Rit verwijderd')},
   saveRide(){
     const d=draft;
     if(!d.date){toast('Kies een datum');return}
     if(!d.km){toast(d.placeId==='x'?'Vul het aantal kilometers in':'Kies een plek');return}
     if(!d.place.trim())d.place='Andere plek';
-    delete d.isNew;delete d.confirm;
+    delete d.isNew;delete d.confirm;delete d.anim;
     const i=S.rides.findIndex(r=>r.id===d.id);
     if(i>=0)S.rides[i]=d;else S.rides.push(d);
-    month=d.date.slice(0,7);draft=null;save();toast('Rit opgeslagen');
+    month=d.date.slice(0,7);draft=null;tab='ritten';save();toast('Rit opgeslagen');
   },
   open(v){open[v]=!open[v]},
   addPerson(){const i=$('#newPerson'),n=i.value.trim();if(!n)return i.focus();S.people.push({id:uid(),name:n});save();setTimeout(()=>$('#newPerson')?.focus())},
@@ -373,15 +509,14 @@ const A={
 };
 document.addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]'); if(!el)return;
-  const r=await A[el.dataset.act](el.dataset.v,el);
+  const r=await A[el.dataset.act](el.dataset.v,el,e);
   if(r!==false)render();
 });
 document.addEventListener('change',e=>{
   const el=e.target, k=el.dataset.chg, v=el.dataset.v; if(!k)return;
-  if(k==='rate'){S.rate=parseNum(el.value)||0.23;el.value=String(S.rate).replace('.',',')}
+  if(k==='rate'){S.rate=parseNum(el.value)||0.23;el.value=S.rate.toFixed(2).replace('.',',')}
   else if(k==='driver'){S.driver=el.value.trim()||'Enza'}
   else if(k==='dshare'){S.driverShares=el.checked}
-  else if(k==='pname'){const p=person(v);if(el.value.trim())p.name=el.value.trim();else el.value=p.name}
   else if(k==='plname'){const p=S.places.find(x=>x.id===v);if(el.value.trim())p.name=el.value.trim();else el.value=p.name}
   else if(k==='plkm'){const p=S.places.find(x=>x.id===v);p.km=parseNum(el.value)||p.km;el.value=String(p.km).replace('.',',')}
   else if(k==='paid'){(S.paid[month]=S.paid[month]||{})[v]=el.checked;save();render();return}
@@ -393,9 +528,10 @@ document.addEventListener('input',e=>{
   if(k==='date')draft.date=e.target.value;
   if(k==='place')draft.place=e.target.value;
   if(k==='km')draft.km=parseNum(e.target.value);
-  $('#preview').innerHTML=preview();
+  refreshAmounts();
 });
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&draft){draft=null;render()}
   if(e.key!=='Enter')return;
   if(e.target.id==='newPerson'){A.addPerson();render()}
   if(e.target.id==='newKm'||e.target.id==='newPlace'){A.addPlace();render()}
